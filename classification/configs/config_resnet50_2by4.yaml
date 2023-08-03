@@ -5,7 +5,7 @@ TRAIN:
     sparse_optimizer: 1
 
     workers: 3
-    batch_size: 256
+    batch_size: 128
     epochs: 120
 
     lr_mode : cosine
@@ -21,9 +21,9 @@ TRAIN:
     print_freq: 100
     model_dir: checkpoint/resnet50_2by4
 
-    train_root: /mnt/lustre/share/images/train
+    train_root: /datasets/ILSVRC2012
     train_source: /mnt/lustre/share/images/meta/train.txt
-    val_root: /mnt/lustre/share/images/val
+    val_root: /datasets/ILSVRC2012
     val_source: /mnt/lustre/share/images/meta/val.txt
 
 

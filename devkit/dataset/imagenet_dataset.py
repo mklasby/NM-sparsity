@@ -1,7 +1,14 @@
 from torch.utils.data import Dataset
 from PIL import Image
 import torch
+from torchvision import transforms, datasets
 
+class ImagenetDatasetV2(datasets.ImageNet):
+
+    def __init__(self, root_dir, meta_file, transform=None):
+        super().__init__(root=root_dir, transform=transform)
+        
+    
 def pil_loader(filename):
     with Image.open(filename) as img:
         img = img.convert('RGB')

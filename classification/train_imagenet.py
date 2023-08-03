@@ -11,13 +11,13 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import yaml
 import sys
-from tensorboardX import SummaryWriter
+# from tensorboardX import SummaryWriter
 import models
 import os.path as osp
 sys.path.append(osp.abspath(osp.join(__file__, '../')))
 
 from devkit.core import (init_dist, broadcast_params, average_gradients, load_state_ckpt, load_state, save_checkpoint, LRScheduler)
-from devkit.dataset.imagenet_dataset import ColorAugmentation, ImagenetDataset
+from devkit.dataset.imagenet_dataset import ColorAugmentation, ImagenetDataset, ImagenetDatasetV2
 
 
 
@@ -25,7 +25,7 @@ from devkit.dataset.imagenet_dataset import ColorAugmentation, ImagenetDataset
 
 parser = argparse.ArgumentParser(
     description='Pytorch Imagenet Training')
-parser.add_argument('--config', default='configs/config_resnet50_2:4.yaml')
+parser.add_argument('--config', default='classification/configs/config_resnet50_2by4.yaml')
 parser.add_argument("--local_rank", type=int)
 parser.add_argument(
     '--port', default=29500, type=int, help='port of server')
@@ -42,7 +42,7 @@ def main():
     args = parser.parse_args()
 
     with open(args.config) as f:
-        config = yaml.load(f)
+        config = yaml.load(f, yaml.Loader)
 
     for key in config:
         for k, v in config[key].items():
@@ -79,17 +79,17 @@ def main():
         load_state_ckpt(args.checkpoint_path, model)
     else:
         best_prec1, start_epoch = load_state(model_dir, model, optimizer=optimizer)
-    if args.rank == 0:
-        writer = SummaryWriter(model_dir)
-    else:
-        writer = None
+    # if args.rank == 0:
+    #     writer = SummaryWriter(model_dir)
+    # else:
+    writer = None
 
     cudnn.benchmark = True
 
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
-
-    train_dataset = ImagenetDataset(
+    
+    train_dataset = ImagenetDatasetV2(
         args.train_root,
         args.train_source,
         transforms.Compose([
@@ -99,7 +99,7 @@ def main():
             ColorAugmentation(),
             normalize,
         ]))
-    val_dataset = ImagenetDataset(
+    val_dataset = ImagenetDatasetV2(
         args.val_root,
         args.val_source,
         transforms.Compose([
