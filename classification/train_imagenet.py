@@ -1,4 +1,5 @@
 from __future__ import division
+import dotenv
 import argparse
 import os
 import time
@@ -14,14 +15,12 @@ import sys
 # from tensorboardX import SummaryWriter
 import models
 import os.path as osp
+
+
 sys.path.append(osp.abspath(osp.join(__file__, '../')))
 
 from devkit.core import (init_dist, broadcast_params, average_gradients, load_state_ckpt, load_state, save_checkpoint, LRScheduler)
 from devkit.dataset.imagenet_dataset import ColorAugmentation, ImagenetDataset, ImagenetDatasetV2
-
-
-
-
 
 parser = argparse.ArgumentParser(
     description='Pytorch Imagenet Training')
@@ -309,4 +308,5 @@ def accuracy(output, target, topk=(1,)):
     return res
 
 if __name__ == '__main__':
+    dotenv.load_dotenv(dotenv_path=".env", override=True)
     main()
