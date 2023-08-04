@@ -2,3 +2,4 @@ torchvision
 torch==1.8.0
 pyyaml
 scipy
+python-dotenv
